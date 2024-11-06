@@ -1,1 +1,1 @@
-this repository is for comp1000 works.
+this repository is for comp1004 works.
