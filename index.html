@@ -1,67 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Password Manager</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    form {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      padding: 10px 15px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #strength {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    .weak {
-      color: red;
-    }
-    .moderate {
-      color: orange;
-    }
-    .strong {
-      color: green;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SecureBox</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
-  <h1>Password Account Management</h1>
-  <form id="accountForm">
-    <label for="username">Username:</label>
-    <input type="text" id="username" placeholder="Enter your username" required>
-    <label for="password">Password:</label>
-    <input type="password" id="password" placeholder="Enter your password" required>
-    <button type="submit">Save Account</button>
-  </form>
-  <div id="feedback"></div>
-  <div id="strength"></div>
+  <header>
+    <h1>SecureBox</h1>
+    <div class="toggle-container">
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()" />
+        <span class="slider"></span>
+      </label>
+      <span>Dark Mode</span>
+    </div>
+    <nav>
+      <a href="#" onclick="showPage('home')">Home</a>
+      <a href="#" onclick="showPage('vault')">Vault</a>
+      <a href="#" onclick="showPage('generate')">Generate Password</a>
+    </nav>
+  </header>
+
+  <main id="content">
+    <!-- Home Section -->
+    <section id="home">
+      <h2>Welcome to SecureBox</h2>
+      <p>Your secure password manager.</p>
+      <div class="dashboard-buttons">
+        <label for="userFileHome" class="file-label">
+          <input type="file" id="userFileHome" accept=".json" onchange="handleJSONUploadFromHome(event)" />
+          Upload JSON File & Go to Vault
+        </label>
+      </div>
+
+      <section id="saved-accounts">
+        <h2>Saved Accounts</h2>
+        <input type="text" id="searchBar" placeholder="Search..." oninput="filterAccounts()" />
+        <div id="stored-accounts"></div>
+      </section>
+    </section>
+
+    <!-- Vault Section -->
+    <section id="vault" style="display: none;">
+      <h2>Your Vault</h2>
+      <label for="userFile" class="file-label">
+        <input type="file" id="userFile" accept=".json" onchange="handleJSONUpload(event)" />
+        Upload JSON File
+      </label>
+      <p id="file-warning" style="color: red;"></p>
+
+      <form id="password-form">
+        <label for="appName">Application Name:</label>
+        <input type="text" id="appName" maxlength="30" required />
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" maxlength="30" required />
+
+        <label for="category">Category:</label>
+        <select id="category">
+          <option value="Work">Work</option>
+          <option value="Social">Social</option>
+          <option value="Finance">Finance</option>
+        </select>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" maxlength="50" required oninput="checkPasswordStrength(this.value)" />
+        <label><input type="checkbox" id="show-password-checkbox" onclick="toggleFormPasswordVisibility()" /> Show Password</label>
+
+        <progress id="strength-bar" max="5" value="0"></progress>
+        <span id="strength-text"></span>
+
+        <button type="submit">Save</button>
+      </form>
+
+      <button onclick="exportAccounts()">Export Accounts</button>
+
+      <div class="toggle-section">
+        <button onclick="toggleSection('vault-saved-accounts')">🔽 Saved Accounts</button>
+        <div id="vault-saved-accounts" style="display: block;">
+          <input type="text" id="vaultSearchBar" placeholder="Search..." oninput="filterVaultAccounts()" />
+          <div id="vault-saved-container"></div>
+        </div>
+      </div>
+
+      <div class="toggle-section">
+        <button onclick="toggleSection('vault-json-preview')">🔽 Preview of Uploaded JSON</button>
+        <div id="vault-json-preview" style="display: block;">
+          <div id="vault-json-preview-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Generate Password Section -->
+    <section id="generate" style="display: none;">
+      <h2>Generate Password</h2>
+      <button onclick="generatePassword()">Generate Password</button>
+      <input type="text" id="generated-password" readonly />
+      <button onclick="copyPassword()">Copy</button>
+      <progress id="generated-strength-bar" max="5" value="0"></progress>
+      <span id="generated-strength-text"></span>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
-<script src="app.js"></script>
 </html>
