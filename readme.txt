@@ -1,6 +1,6 @@
 # SecureBox: A Password Manager
 
-Hey there! Welcome to this simple but secure password manager I built to help manage all those pesky passwords we need these days. It's completely client-side, so your data stays on your computer - nothing gets sent to any servers.
+Hey there! Welcome to this simple but secure password manager I built to help manage all those passwords we need these days. It's completely client-side, so your data stays on your computer - nothing gets sent to any servers.
 
 ## What does it do?
 
